@@ -19,7 +19,7 @@ Our passive (frictionless) face liveness detector uses **SOTA (State Of The Art)
 
 We're working to package and release the source code of the SDK. This document will be updated to include the API reference and a Getting Started guide.
 
-The next [video](https://youtu.be/4Z8VRTS8WrA) ([https://youtu.be/4Z8VRTS8WrA](https://youtu.be/4Z8VRTS8WrA)) shows the liveness detector on **Replay-Attack**.<br />
-[![Replay-Attack on Passive Face Liveness detector (anti-spoofing)](docs/images/youtube/Replay-Attack_thumbnail-0.jpg)](https://www.youtube.com/watch?v=4Z8VRTS8WrA)
+The next [video](https://youtu.be/4Z8VRTS8WrA) ([https://youtu.be/4Z8VRTS8WrA](https://youtu.be/4Z8VRTS8WrA)) shows the liveness detector on **Replay-Attack**.<br /><br />
+[![Replay-Attack on Passive Face Liveness detector (anti-spoofing)](https://www.doubango.org/SDKs/face-liveness/docs/_images/youtube/Replay-Attack_thumbnail-0.jpg)](https://www.youtube.com/watch?v=4Z8VRTS8WrA)
 <hr />
 
