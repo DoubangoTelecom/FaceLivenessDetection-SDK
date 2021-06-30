@@ -1,33 +1,49 @@
-# Prerequisites
-*.d
-
-# Compiled Object files
-*.slo
-*.lo
+*.user
+*.suo
+*.opensdf
+*.sdf
+*.xcuserdatad
+*.DS_Store
+/ipch
+/x64
+*.idb
+/Debug
+Debug_dynamic
+Debug_static
+Release
+Release_dynamic
+Release_static
+Debug_sdk
+Release_sdk
+*.orig
+*.tlog
+Debug
+*.gray
+*.yuv
+*.rgb
+*.ipch
+*.opendb
+*.db
 *.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
+*.iws
+.idea/tasks.xml
+.idea/vcs.xml
+.idea/workspace.xml
+workspace.xml
+local.properties
+.gradle
+gradle
+gradlew
+gradlew.bat
+build
+gen
+out
+.externalNativeBuild
+My Amplifier XE Results*
+My Advisor Results*
+*.rbg
+/.vs/config
+/vs_android/.vs
 /docs/*.odt#
+/vs_android/.workspace
+
