@@ -1,7 +1,13 @@
- - Online web demo at https://www.doubango.org/webapps/face-liveness/
- - Full documentation for the SDK at https://www.doubango.org/SDKs/face-liveness/docs/
- - Supported languages (API): **C++**, **C#**, **Java** and **Python**
- - Open source Computer Vision Library: https://github.com/DoubangoTelecom/compv
+- [Getting started](#getting-started)
+  - [Checking out the source code](#checkout-source)
+  - [Trying samples](#trying-samples) (**C++**, **C#**, **Java** and **Python**)
+  - [Getting help](#technical-questions)
+
+
+- Online web demo at https://www.doubango.org/webapps/face-liveness/
+- Full documentation for the SDK at https://www.doubango.org/SDKs/face-liveness/docs/
+- Supported languages (API): **C++**, **C#**, **Java** and **Python**
+- Open source Computer Vision Library: https://github.com/DoubangoTelecom/compv
 <hr />
 
 To our knowledge we're **the only company in the world** that can perform 3D liveness check and [identity concealment](https://www.doubango.org/SDKs/face-liveness/docs/Identity_concealment.html) detection from a single 2D image. We outperform [the competition](https://www.doubango.org/SDKs/face-liveness/docs/Testing_the_competition.html) ([FaceTEC](https://www.doubango.org/SDKs/face-liveness/docs/Testing_the_competition.html#facetec), [BioID](https://www.doubango.org/SDKs/face-liveness/docs/Testing_the_competition.html#bioid), [Onfido](https://www.doubango.org/SDKs/face-liveness/docs/Testing_the_competition.html#onfido), [Huawei](https://www.doubango.org/SDKs/face-liveness/docs/Testing_the_competition.html#huawei)...) in speed and accuracy. **Our implementation is Passive/Frictionless and only takes few milliseconds.**
@@ -14,10 +20,30 @@ We can detect and block all known spoofing attacks: `Paper Print, Screen, Video 
 
 The next [video](https://youtu.be/4irfRCiOx1w) ([https://youtu.be/4irfRCiOx1w](https://youtu.be/4irfRCiOx1w)) shows a stress test on our implementation using different type of attacks:
 
-[![Doubango AI: 3D Face liveness detector stress test](https://www.doubango.org/SDKs/face-liveness/docs/_images/doubango-stress-test-thubnail.jpg)](https://www.youtube.com/watch?v=4Z8VRTS8WrA)
+[![Doubango AI: 3D Face liveness detector stress test](poster-medium.jpg)](https://www.youtube.com/watch?v=4Z8VRTS8WrA)
 <hr />
 
 Our passive (frictionless) face liveness detector uses SOTA (State Of The Art) deep learning techniques and can be freely tested with your own images at https://www.doubango.org/webapps/face-liveness/
 <hr />
 
-[Contact us](https://www.doubango.org#contact) if you want to get access to the SDK.
+<a name="getting-started"></a>
+# Getting started #
+This version supports both Windows and Linux x86_64.
+
+<a name="checkout-source"></a>
+## Checking out the source code ##
+[The deep learning models](assets/FaceLivenessDetection-Models) are hosted on private repository for obvious reasons. You have to [send us a mail](https://www.doubango.org/#contact) with your company name and Github user name (to be added to the private repo).
+
+```
+git clone --recurse-submodules -j8 https://github.com/DoubangoTelecom/FaceLivenessDetection-SDK
+```
+
+If you already have the code and want to update to the latest version: `git pull --recurse-submodules`
+
+<a name="trying-samples"></a>
+## Trying samples (**C++**, **C#**, **Java** and **Python**) ##
+Go to the [samples](samples) folder and choose your prefered language.
+
+<a name="technical-questions"></a>
+# Technical questions #
+Please check our [discussion group](https://groups.google.com/forum/#!forum/doubango-ai) or [twitter account](https://twitter.com/doubangotelecom?lang=en)

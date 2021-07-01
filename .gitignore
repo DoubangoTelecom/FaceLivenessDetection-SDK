@@ -7,7 +7,6 @@
 /ipch
 /x64
 *.idb
-*.class
 /Debug
 Debug_dynamic
 Debug_static
@@ -19,6 +18,7 @@ Release_sdk
 *.orig
 *.tlog
 Debug
+*.class
 *.gray
 *.yuv
 *.rgb

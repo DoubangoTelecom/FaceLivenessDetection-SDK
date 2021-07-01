@@ -1,0 +1,8 @@
+Liveness.java
+../../../java/org/doubango/FaceLivenessDetection/Sdk/FaceLivenessDetectionSDK.java
+../../../java/org/doubango/FaceLivenessDetection/Sdk/FaceLivenessDetectionSDKConstants.java
+../../../java/org/doubango/FaceLivenessDetection/Sdk/FaceLivenessDetectionSDKJNI.java
+../../../java/org/doubango/FaceLivenessDetection/Sdk/FLD_SDK_IMAGE_TYPE.java
+../../../java/org/doubango/FaceLivenessDetection/Sdk/FldSdkEngine.java
+../../../java/org/doubango/FaceLivenessDetection/Sdk/FldSdkResult.java
+../../../java/org/doubango/FaceLivenessDetection/Sdk/FldSdkParallelDeliveryCallback.java

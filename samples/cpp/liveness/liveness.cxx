@@ -168,7 +168,7 @@ int main(int argc, char *argv[])
 	)).isOK());
 
 	// WarmUp: Force loading the models in memory (slow for first time) now and perform warmup calls.
-	// Warmup not required by processing will be fast if you call warm up first.
+	// Warmup not required but processing will be fast if you call warm up first.
 	FLD_SDK_ASSERT((result = FldSdkEngine::warmUp(fldFile.type)).isOK());
 
 	// Processing

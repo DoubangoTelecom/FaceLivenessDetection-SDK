@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.0.0)
  
-project (liveness)
+project (liveness VERSION 1.0.0 LANGUAGES CXX C)
 set(EXECUTABLE_OUTPUT_PATH ./${CMAKE_BUILD_TYPE})
  
 include_directories(
@@ -13,12 +13,12 @@ set (SOURCE liveness.cxx)
 add_executable (${PROJECT_NAME} ${SOURCE})
 
 if (WIN32)
-	set (OS_NAME, windows)
+target_link_libraries(${PROJECT_NAME} 
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../binaries/windows/x86_64/FaceLivenessDetectionSDK.lib
+)
 else ()
-	set (OS_NAME, linux)
+target_link_libraries(${PROJECT_NAME} 
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../binaries/linux/x86_64/libFaceLivenessDetectionSDK.so
+)
 endif ()
-
-find_library(FLD_LIB NAMES "FaceLivenessDetectionSDK" "FaceLivenessDetection-SDK" HINTS "${CMAKE_CURRENT_SOURCE_DIR}/../../../binaries/${OS_NAME}/x86_64")
- 
-target_link_libraries(${PROJECT_NAME} ${FLD_LIB})
 

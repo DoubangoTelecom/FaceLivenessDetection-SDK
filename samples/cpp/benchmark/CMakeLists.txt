@@ -13,12 +13,12 @@ set (SOURCE benchmark.cxx)
 add_executable (${PROJECT_NAME} ${SOURCE})
 
 if (WIN32)
-	set (OS_NAME, windows)
+target_link_libraries(${PROJECT_NAME} 
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../binaries/windows/x86_64/FaceLivenessDetectionSDK.lib
+)
 else ()
-	set (OS_NAME, linux)
+target_link_libraries(${PROJECT_NAME} 
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../binaries/linux/x86_64/libFaceLivenessDetectionSDK.so
+)
 endif ()
-
-find_library(FLD_LIB NAMES "FaceLivenessDetectionSDK" "FaceLivenessDetection-SDK" HINTS "${CMAKE_CURRENT_SOURCE_DIR}/../../../binaries/${OS_NAME}/x86_64")
- 
-target_link_libraries(${PROJECT_NAME} ${FLD_LIB})
 
