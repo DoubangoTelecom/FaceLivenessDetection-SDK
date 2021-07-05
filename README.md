@@ -32,7 +32,7 @@ This version supports both Windows and Linux x86_64.
 
 <a name="checkout-source"></a>
 ## Checking out the source code ##
-[The deep learning models](assets/FaceLivenessDetection-Models) are hosted on private repository for obvious reasons. You have to [send us a mail](https://www.doubango.org/#contact) with your company name and Github user name (to be added to the private repo).
+[The deep learning models](assets/FaceLivenessDetection-Models) are hosted on private repository for obvious reasons. You have to [send us a mail](https://www.doubango.org/#contact) with your company name and Github user name (to be added to the private repo). **The terms of use do not allow you to decompile or reverse engineer the models.**
 
 ```
 git clone --recurse-submodules -j8 https://github.com/DoubangoTelecom/FaceLivenessDetection-SDK
