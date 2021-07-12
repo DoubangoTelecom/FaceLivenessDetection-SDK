@@ -75,8 +75,8 @@ Options surrounded with **[]** are optional.
 - `--image` Path to the image(JPEG/PNG/BMP) to process. You can use default image at [../../../assets/images/disguise.jpg](../../../assets/images/disguise.jpg).
 - `--assets` Path to the [assets](../../../assets) folder containing the configuration files and models.
 - `--parallel` Whether to enabled the parallel mode. More info about the parallel mode at [https://www.doubango.org/SDKs/face-liveness/docs/Parallel_versus_sequential_processing.html](https://www.doubango.org/SDKs/face-liveness/docs/Parallel_versus_sequential_processing.html). Default: *false*.
-- `--tokenfile` Path to the file containing the base64 license token if you have one. If not provided then, the application will act like a trial version. Default: *null*.
-- `--tokendata` Base64 license token if you have one. If not provided then, the application will act like a trial version. Default: *null*.
+- `--tokenfile` Path to the file containing the base64 license token if you have one. If not provided, then the application will act like a trial version. Default: *null*.
+- `--tokendata` Base64 license token if you have one. If not provided, then the application will act like a trial version. Default: *null*.
 
 <a name="testing-examples"></a>
 ## Examples ##
