@@ -15,7 +15,7 @@ FaceLivenessDetection-SDK public header
 #include <assert.h>
 
 #define FLD_SDK_VERSION_MAJOR		0
-#define FLD_SDK_VERSION_MINOR		4
+#define FLD_SDK_VERSION_MINOR		5
 #define FLD_SDK_VERSION_MICRO		0
 
 // Windows's symbols export
@@ -262,22 +262,22 @@ namespace FaceLiveness
 		<br />
 		If you're using OpenCV to capture images from the camera or RTSP stream, the function could be used like this:
 		\code{.cpp}
-		VideoCapture cap(....);
+		VideoCapture cap(...);
 
 		while (1) {
-		Mat frame;
-		cap >> frame;
+			Mat frame;
+			cap >> frame;
 
-		if (frame.empty()) {
-		    break;
-		}
+			if (frame.empty()) {
+				break;
+			}
 
-		FLD_SDK_ASSERT((result = FldSdkEngine::process(
-		    FLD_SDK_IMAGE_TYPE_BGR24,
-		    frame.ptr(),
-		    frame.size().width,
-		    frame.size().height
-		)).isOK());
+			FLD_SDK_ASSERT((result = FldSdkEngine::process(
+				FLD_SDK_IMAGE_TYPE_BGR24,
+				frame.ptr(),
+				frame.size().width,
+				frame.size().height
+			)).isOK());
 		}
 		\endcode
 		\param imageType The image type.
