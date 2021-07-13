@@ -35,11 +35,22 @@ To check if all dependencies are present:
 <a name="peformance-numbers"></a>
 # Peformance numbers #
 
-These performance numbers are obtained using **version 0.4.0**. You can use any later version.
+These performance numbers are obtained using **version 0.5.0**. You can use any later version.
 
-Some performance numbers using **720p (1280x720)** images:
 
-<<< To be filled >>>
+We run the benchmark application for **#100 times (loops)** on **720p (1280x720)** images:
+
+| | [Spoof (Parallel)](../../../assets/images/spoof.jpg) | [Spoof (Sequential)](../../../assets/images/spoof.jpg) | [Disguise (P)](../../../assets/images/disguise.jpg) | [Disguise (S)](../../../assets/images/disguise.jpg) |
+| --- | --- | --- | --- | --- |
+| AMD Ryzen 7 3700X 8-Core<br/>RTX 3060<br/>Ubuntu 20 | 2140 millis<br/>46.70 fps | 2977 millis<br/>33.58 fps | 2062 millis<br/>48.48 fps | 4130 millis<br/>24.20 fps |
+| Intel(R) Xeon(R) E3-1230 v6 @ 3.50GHz<br/>GTX 1070<br/>Ubuntu 18 | 2655 millis<br/>37.65 fps | 3553 millis<br/>28.13 fps | 2721 millis<br/>36.73 fps | 4436 millis<br/>22.54 fps |
+| Intel(R) i7-4790K @4.40GHz<br/>No GPU<br/>Windows 8 | 7197 millis<br/>13.89 fps | 7281 millis<br/>13.73 fps | 11480 millis<br/>8.71 fps | 11643 millis<br/>8.58 fps |
+
+
+Some important notes:
+ - **You can increase the speed (significantly) by choosing higher value for `detect_face_minsize` JSON config entry (default is 128).**
+ - The engine is faster on spoofs. That's normal as there is more checks on disguises and genuines.
+ - Parallel mode is faster than sequential mode on GPU. When parallel mode is enabled we perform detection and liveness check in //.
 
 The test image looks like this:
 ![Test image](../../../assets/images/disguise.jpg)
@@ -86,8 +97,8 @@ benchmark \
 Options surrounded with **[]** are optional.
 - `--image` Path to an image (JPEG/PNG/BMP) to process. This image will be used to evaluate the liveness detector. You can use default image at [../../../assets/images/disguise.jpg](../../../assets/images/disguise.jpg).
 - `--assets` Path to the [assets](../../../assets) folder containing the configuration files and models.
-- `--tokenfile` Path to the file containing the base64 license token if you have one. If not provided then, the application will act like a trial version. Default: *null*.
-- `--tokendata` Base64 license token if you have one. If not provided then, the application will act like a trial version. Default: *null*.
+- `--tokenfile` Path to the file containing the base64 license token if you have one. If not provided, then the application will act like a trial version. Default: *null*.
+- `--tokendata` Base64 license token if you have one. If not provided, then the application will act like a trial version. Default: *null*.
 
 <a name="testing-examples"></a>
 ## Examples ##
