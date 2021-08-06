@@ -16,7 +16,7 @@ FaceLivenessDetection-SDK public header
 
 #define FLD_SDK_VERSION_MAJOR		0
 #define FLD_SDK_VERSION_MINOR		5
-#define FLD_SDK_VERSION_MICRO		0
+#define FLD_SDK_VERSION_MICRO		2
 
 // Windows's symbols export
 #if defined(SWIG)
