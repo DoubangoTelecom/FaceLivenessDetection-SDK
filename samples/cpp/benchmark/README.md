@@ -38,7 +38,7 @@ To check if all dependencies are present:
 These performance numbers are obtained using **version 0.5.0**. You can use any later version.
 
 
-We run the benchmark application for **#100 times (loops)** on **720p (1280x720)** images:
+We ran the benchmark application for **#100 times (loops)** on **720p (1280x720)** images. The number of milliseconds reported is for #100 frames which means you have to divide by 100 to get the time it takes to process a single frame. For example, `2140 millis` in the below table means it takes `21 milliseconds to process a single frame`, in terms of frame rate it means we can process `46 frames per second`.
 
 | | [Spoof (Parallel)](../../../assets/images/spoof.jpg) | [Spoof (Sequential)](../../../assets/images/spoof.jpg) | [Disguise (P)](../../../assets/images/disguise.jpg) | [Disguise (S)](../../../assets/images/disguise.jpg) |
 | --- | --- | --- | --- | --- |
