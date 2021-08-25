@@ -6,7 +6,7 @@
 
 <hr />
 
-This document explains how to run a licensed version of the SDK inside a container. You can ignore it if you're using the trial version.
+This document explains how to run a licensed version of the SDK inside a container. **You can ignore it if you're using the trial version or if the license is tied to an AWS or Azure instance.**
 
 As explained at [https://www.doubango.org/pricing.html](https://www.doubango.org/pricing.html) our licensing model is per device/machine. 
 Each machine is uniquely identified using the hardware information (CPU model, motherboard, architecture, hard drive serial number...). The hardware information doesn't change even if the OS is (up/down)-graded or reinstalled. We don't use network information like the MAC address to make sure the SDK can work without [NIC](https://en.wikipedia.org/wiki/Network_interface_controller).
