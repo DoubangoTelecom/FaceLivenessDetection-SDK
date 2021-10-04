@@ -134,6 +134,7 @@ use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
 *init = *FaceLivenessDetectionSDKc::FldSdkEngine_init;
 *deInit = *FaceLivenessDetectionSDKc::FldSdkEngine_deInit;
 *process = *FaceLivenessDetectionSDKc::FldSdkEngine_process;
+*exifOrientation = *FaceLivenessDetectionSDKc::FldSdkEngine_exifOrientation;
 *requestRuntimeLicenseKey = *FaceLivenessDetectionSDKc::FldSdkEngine_requestRuntimeLicenseKey;
 *warmUp = *FaceLivenessDetectionSDKc::FldSdkEngine_warmUp;
 sub DESTROY {

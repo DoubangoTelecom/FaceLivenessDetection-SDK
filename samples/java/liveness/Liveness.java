@@ -6,15 +6,19 @@
 */
 
 import java.io.File;
-import java.lang.IllegalArgumentException;
-import java.nio.ByteBuffer;
 import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.IllegalFormatException;
 import java.util.List;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import java.lang.IllegalArgumentException;
+
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.MappedByteBuffer;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
@@ -77,11 +81,8 @@ public class Liveness {
       nativeBuffer.put(pixelData);
       nativeBuffer.rewind();
 
-      // TODO(dmi): add code to extract EXIF orientation
-      final int orientation = 1;
-
       // Get the image format
-      FLD_SDK_IMAGE_TYPE format = (bytesPerPixel == 1) ? FLD_SDK_IMAGE_TYPE.FLD_SDK_IMAGE_TYPE_Y : (bytesPerPixel == 4 ? FLD_SDK_IMAGE_TYPE.FLD_SDK_IMAGE_TYPE_BGRA32 : FLD_SDK_IMAGE_TYPE.FLD_SDK_IMAGE_TYPE_BGR24);
+      final FLD_SDK_IMAGE_TYPE format = (bytesPerPixel == 1) ? FLD_SDK_IMAGE_TYPE.FLD_SDK_IMAGE_TYPE_Y : (bytesPerPixel == 4 ? FLD_SDK_IMAGE_TYPE.FLD_SDK_IMAGE_TYPE_BGRA32 : FLD_SDK_IMAGE_TYPE.FLD_SDK_IMAGE_TYPE_BGR24);
 
       // WarmUp: Force loading the models in memory (slow for first time) now and perform warmup calls.
       // Warmup not required but processing will be fast if you call warm up first.
@@ -96,7 +97,7 @@ public class Liveness {
             image.getWidth(),
             image.getHeight(),
             image.getWidth(), // stride
-            orientation
+            getExifOrientation(file)
          ));
       // Print result to console
       System.out.println("Result: " + result.json() + System.lineSeparator());
@@ -112,6 +113,29 @@ public class Liveness {
        // Now that you're done, deInit the engine before exiting
        CheckResult("DeInit", FldSdkEngine.deInit());
    }
+
+   static int getExifOrientation(File file) throws IOException 
+   {
+      final FileInputStream fin= new FileInputStream(file);
+      final FileChannel channel = fin.getChannel();
+
+      // Check if it's JPEG
+      final MappedByteBuffer codeBuffer = channel.map(FileChannel.MapMode.READ_ONLY, 0, 2); // read 2 first bytes
+      if (codeBuffer.asShortBuffer().get() != -40) { // -40 = 0xFFD8 in Short
+         return 1;
+      }
+      
+      // Read raw data and extract EXIF info
+      final long fileSize = channel.size();
+      final ByteBuffer buffer = ByteBuffer.allocateDirect((int) fileSize);
+      channel.read(buffer);
+      buffer.flip();
+
+      channel.close();
+      fin.close();
+
+      return FldSdkEngine.exifOrientation(buffer, buffer.remaining());
+    }
 
    static Hashtable<String, String> ParseArgs(String[] args) throws IllegalArgumentException
    {

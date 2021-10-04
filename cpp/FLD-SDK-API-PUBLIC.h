@@ -15,8 +15,8 @@ FaceLivenessDetection-SDK public header
 #include <assert.h>
 
 #define FLD_SDK_VERSION_MAJOR		0
-#define FLD_SDK_VERSION_MINOR		5
-#define FLD_SDK_VERSION_MICRO		2
+#define FLD_SDK_VERSION_MINOR		6
+#define FLD_SDK_VERSION_MICRO		0
 
 // Windows's symbols export
 #if defined(SWIG)
@@ -245,9 +245,9 @@ namespace FaceLiveness
 		static FldSdkResult init(jobject assetManager, const char* jsonConfig = nullptr, const FldSdkParallelDeliveryCallback* parallelDeliveryCallback = nullptr);
 #else
 		/*! Initializes the engine. This function must be the first one to call.
-		\param jsonConfig JSON string containing configuration entries. May be null. More info at https://www.doubango.org/SDKs/face-liveness/docs/Configuration_options.html
-		\param parallelDeliveryCallback \ref FldSdkParallelDeliveryCallback "callback" function to enable parallel mode. Use null value to use sequential instead of parallel mode. More info at https://www.doubango.org/SDKs/face-liveness/docs/Parallel_versus_sequential_processing.html.
-		\returns a \ref FldSdkResult "result"
+			\param jsonConfig JSON string containing configuration entries. May be null. More info at https://www.doubango.org/SDKs/face-liveness/docs/Configuration_options.html
+			\param parallelDeliveryCallback \ref FldSdkParallelDeliveryCallback "callback" function to enable parallel mode. Use null value to use sequential instead of parallel mode. More info at https://www.doubango.org/SDKs/face-liveness/docs/Parallel_versus_sequential_processing.html.
+			\returns a \ref FldSdkResult "result"
 		*/
 		static FldSdkResult init(const char* jsonConfig = nullptr, const FldSdkParallelDeliveryCallback* parallelDeliveryCallback = nullptr);
 #endif /* FLD_SDK_OS_ANDROID */
@@ -340,13 +340,22 @@ namespace FaceLiveness
 			const int exifOrientation = 1
 		);
 
+		/*! Retrieve EXIF orientation value from JPEG meta-data.
+			\param jpegMetaDataPtr Pointer to the meta-data.
+			\param jpegMetaDataSize Size of the meta-data.
+			\returns Image's EXIF/JPEG orientation. Must be within [1, 8]. More information at https://www.impulseadventure.com/photo/exif-orientation.html.
+
+			Available since: 0.6.0
+		*/
+		static int exifOrientation(const void* jpegMetaDataPtr, const size_t jpegMetaDataSize);
+
 		/*! Build a unique runtime license key associated to this device.
-		You must \ref init "initialize" the engine before calling this function.
-		This function doesn't require internet connection.
-		The runtime key must be activated to obtain a token. The activation procedure is explained at https://www.doubango.org/SDKs/LicenseManager/docs/Activation_use_cases.html.
-		\param rawInsteadOfJSON Whether to output the runtime key as raw string intead of JSON entry. Requesting raw
-		string instead of JSON could be helpful for applications without JSON parser to extract the key.
-		\returns a \ref FldSdkResult "result"
+			You must \ref init "initialize" the engine before calling this function.
+			This function doesn't require internet connection.
+			The runtime key must be activated to obtain a token. The activation procedure is explained at https://www.doubango.org/SDKs/LicenseManager/docs/Activation_use_cases.html.
+			\param rawInsteadOfJSON Whether to output the runtime key as raw string intead of JSON entry. Requesting raw
+			string instead of JSON could be helpful for applications without JSON parser to extract the key.
+			\returns a \ref FldSdkResult "result"
 		*/
 		static FldSdkResult requestRuntimeLicenseKey(const bool& rawInsteadOfJSON = false);
 

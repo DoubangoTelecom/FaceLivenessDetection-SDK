@@ -91,6 +91,11 @@ public class FldSdkEngine : IDisposable {
     return ret;
   }
 
+  public static int exifOrientation(IntPtr jpegMetaDataPtr, uint jpegMetaDataSize) {
+    int ret = FaceLivenessDetectionSDKPINVOKE.FldSdkEngine_exifOrientation(jpegMetaDataPtr, jpegMetaDataSize);
+    return ret;
+  }
+
   public static FldSdkResult requestRuntimeLicenseKey(bool rawInsteadOfJSON) {
     FldSdkResult ret = new FldSdkResult(FaceLivenessDetectionSDKPINVOKE.FldSdkEngine_requestRuntimeLicenseKey__SWIG_0(rawInsteadOfJSON), true);
     return ret;

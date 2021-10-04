@@ -264,6 +264,9 @@ class FaceLivenessDetectionSDKPINVOKE {
   [DllImport("FaceLivenessDetectionSDK", EntryPoint="CSharp_FldSdkEngine_process__SWIG_5")]
   public static extern IntPtr FldSdkEngine_process__SWIG_5(int jarg1, IntPtr jarg2, IntPtr jarg3, IntPtr jarg4, uint jarg5, uint jarg6, uint jarg7, uint jarg8, uint jarg9);
 
+  [DllImport("FaceLivenessDetectionSDK", EntryPoint="CSharp_FldSdkEngine_exifOrientation")]
+  public static extern int FldSdkEngine_exifOrientation(IntPtr jarg1, uint jarg2);
+
   [DllImport("FaceLivenessDetectionSDK", EntryPoint="CSharp_FldSdkEngine_requestRuntimeLicenseKey__SWIG_0")]
   public static extern IntPtr FldSdkEngine_requestRuntimeLicenseKey__SWIG_0(bool jarg1);
 

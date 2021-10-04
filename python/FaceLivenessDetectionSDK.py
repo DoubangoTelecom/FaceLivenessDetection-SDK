@@ -134,6 +134,8 @@ class FldSdkEngine(_object):
     if _newclass:deInit = staticmethod(_FaceLivenessDetectionSDK.FldSdkEngine_deInit)
     __swig_getmethods__["process"] = lambda x: _FaceLivenessDetectionSDK.FldSdkEngine_process
     if _newclass:process = staticmethod(_FaceLivenessDetectionSDK.FldSdkEngine_process)
+    __swig_getmethods__["exifOrientation"] = lambda x: _FaceLivenessDetectionSDK.FldSdkEngine_exifOrientation
+    if _newclass:exifOrientation = staticmethod(_FaceLivenessDetectionSDK.FldSdkEngine_exifOrientation)
     __swig_getmethods__["requestRuntimeLicenseKey"] = lambda x: _FaceLivenessDetectionSDK.FldSdkEngine_requestRuntimeLicenseKey
     if _newclass:requestRuntimeLicenseKey = staticmethod(_FaceLivenessDetectionSDK.FldSdkEngine_requestRuntimeLicenseKey)
     __swig_getmethods__["warmUp"] = lambda x: _FaceLivenessDetectionSDK.FldSdkEngine_warmUp
@@ -154,6 +156,10 @@ FldSdkEngine_deInit = _FaceLivenessDetectionSDK.FldSdkEngine_deInit
 def FldSdkEngine_process(*args):
   return _FaceLivenessDetectionSDK.FldSdkEngine_process(*args)
 FldSdkEngine_process = _FaceLivenessDetectionSDK.FldSdkEngine_process
+
+def FldSdkEngine_exifOrientation(*args):
+  return _FaceLivenessDetectionSDK.FldSdkEngine_exifOrientation(*args)
+FldSdkEngine_exifOrientation = _FaceLivenessDetectionSDK.FldSdkEngine_exifOrientation
 
 def FldSdkEngine_requestRuntimeLicenseKey(rawInsteadOfJSON=False):
   return _FaceLivenessDetectionSDK.FldSdkEngine_requestRuntimeLicenseKey(rawInsteadOfJSON)

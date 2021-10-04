@@ -5328,6 +5328,44 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_FldSdkEngine_exifOrientation(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  void *arg1 = (void *) 0 ;
+  size_t arg2 ;
+  size_t val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:FldSdkEngine_exifOrientation",&obj0,&obj1)) SWIG_fail;
+  {
+    // https://docs.python.org/3/c-api/bytes.html#c.PyBytes_AsString
+    // char* PyBytes_AsString(PyObject *o)
+    // Return a pointer to the contents of o. The pointer refers to the internal buffer of o, which consists of len(o) + 1 bytes. 
+    // The last byte in the buffer is always null, regardless of whether there are any other null bytes. 
+    // The data must not be modified in any way, unless the object was just created using PyBytes_FromStringAndSize(NULL, size). 
+    // It must not be deallocated. If o is not a bytes object at all, PyBytes_AsString() returns NULL and raises TypeError.
+    if (PyBytes_Check(obj0)) {
+      arg1 = (void *) PyBytes_AsString(obj0);
+    }
+    else if (PyString_Check(obj0)) {
+      arg1 = (void *) PyString_AsString(obj0);
+    }
+  }
+  ecode2 = SWIG_AsVal_size_t(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "FldSdkEngine_exifOrientation" "', argument " "2"" of type '" "size_t""'");
+  } 
+  arg2 = static_cast< size_t >(val2);
+  result = (int)FaceLiveness::FldSdkEngine::exifOrientation((void const *)arg1,arg2);
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_FldSdkEngine_requestRuntimeLicenseKey__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   bool *arg1 = 0 ;
@@ -5464,6 +5502,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"FldSdkEngine_init", _wrap_FldSdkEngine_init, METH_VARARGS, NULL},
 	 { (char *)"FldSdkEngine_deInit", _wrap_FldSdkEngine_deInit, METH_VARARGS, NULL},
 	 { (char *)"FldSdkEngine_process", _wrap_FldSdkEngine_process, METH_VARARGS, NULL},
+	 { (char *)"FldSdkEngine_exifOrientation", _wrap_FldSdkEngine_exifOrientation, METH_VARARGS, NULL},
 	 { (char *)"FldSdkEngine_requestRuntimeLicenseKey", _wrap_FldSdkEngine_requestRuntimeLicenseKey, METH_VARARGS, NULL},
 	 { (char *)"FldSdkEngine_warmUp", _wrap_FldSdkEngine_warmUp, METH_VARARGS, NULL},
 	 { (char *)"delete_FldSdkEngine", _wrap_delete_FldSdkEngine, METH_VARARGS, NULL},
@@ -6213,7 +6252,7 @@ SWIG_init(void) {
   SWIG_InstallConstants(d,swig_const_table);
   
   SWIG_Python_SetConstant(d, "FLD_SDK_VERSION_MAJOR",SWIG_From_int(static_cast< int >(0)));
-  SWIG_Python_SetConstant(d, "FLD_SDK_VERSION_MINOR",SWIG_From_int(static_cast< int >(3)));
+  SWIG_Python_SetConstant(d, "FLD_SDK_VERSION_MINOR",SWIG_From_int(static_cast< int >(6)));
   SWIG_Python_SetConstant(d, "FLD_SDK_VERSION_MICRO",SWIG_From_int(static_cast< int >(0)));
   SWIG_Python_SetConstant(d, "FLD_SDK_IMAGE_TYPE_RGB24",SWIG_From_int(static_cast< int >(FaceLiveness::FLD_SDK_IMAGE_TYPE_RGB24)));
   SWIG_Python_SetConstant(d, "FLD_SDK_IMAGE_TYPE_RGBA32",SWIG_From_int(static_cast< int >(FaceLiveness::FLD_SDK_IMAGE_TYPE_RGBA32)));

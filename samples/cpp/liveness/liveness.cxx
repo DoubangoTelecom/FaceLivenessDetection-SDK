@@ -6,16 +6,22 @@
 */
 #include <FLD-SDK-API-PUBLIC.h>
 
-#include "fld_image_utils.h"
 #include <chrono>
 #include <vector>
 #include <algorithm>
+#include <sys/stat.h>
 #include <random>
 #include <mutex>
+#include <map>
 #include <condition_variable>
 #if defined(_WIN32)
 #include <algorithm> // std::replace
 #endif
+
+// Not part of the SDK, used to decode images -> https://github.com/nothings/stb
+#define STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_STATIC
+#include "../stb_image.h"
 
 using namespace FaceLiveness;
 
@@ -25,6 +31,55 @@ using namespace FaceLiveness;
 #else
 #	define ASSET_MGR_PARAM() 
 #endif /* FLD_SDK_OS_ANDROID */
+
+struct FldFile {
+	int width = 0, height = 0, channels = 0;
+	stbi_uc* uncompressedDataPtr = nullptr;
+	void* compressedDataPtr = nullptr;
+	size_t compressedDataSize = 0;
+	FILE* filePtr = nullptr;
+	virtual ~FldFile() {
+		if (uncompressedDataPtr) free(uncompressedDataPtr), uncompressedDataPtr = nullptr;
+		if (compressedDataPtr) free(compressedDataPtr), compressedDataPtr = nullptr;
+		if (filePtr) fclose(filePtr), filePtr = nullptr;
+	}
+	bool isValid() const {
+		return width > 0 && height > 0 && (channels == 1 || channels == 3 || channels == 4) && uncompressedDataPtr && compressedDataPtr && compressedDataSize > 0;
+	}
+	FLD_SDK_IMAGE_TYPE type() const {
+		return channels == 4 ? FLD_SDK_IMAGE_TYPE_RGBA32 : (channels == 1 ? FLD_SDK_IMAGE_TYPE_Y : FLD_SDK_IMAGE_TYPE_RGB24);
+	}
+};
+
+/*
+* Parallel callback function used for notification. Not mandatory.
+* More info about parallel delivery: https://www.doubango.org/SDKs/anpr/docs/Parallel_versus_sequential_processing.html
+*/
+static size_t parallelNotifCount = 0;
+static std::condition_variable parallelNotifCondVar;
+class MyFldSdkParallelDeliveryCallback : public FldSdkParallelDeliveryCallback {
+public:
+	MyFldSdkParallelDeliveryCallback(const void* userData) : m_pMyDummyData(userData) {}
+	virtual void onNewResult(const FldSdkResult* result) const override {
+		// Use m_pMyDummyData here if you want
+		FLD_SDK_ASSERT(result != nullptr);
+		const std::string& json = result->json();
+		// Printing to the console could be very slow and delayed -> stop displaying the result as soon as all faces are processed
+		FLD_SDK_PRINT_INFO("MyFldSdkParallelDeliveryCallback::onNewResult(%d, %s, %zu): %s",
+			result->code(),
+			result->phrase(),
+			++parallelNotifCount,
+			!json.empty() ? json.c_str() : "{}"
+		);
+		parallelNotifCondVar.notify_one();
+	}
+private:
+	const void* m_pMyDummyData;
+};
+
+static void printUsage(const std::string& message = "");
+static bool parseArgs(int argc, char *argv[], std::map<std::string, std::string >& values);
+static bool readFile(const std::string& path, FldFile& file);
 
 // Configuration for the deep learning engine
 static const char* __jsonConfig =
@@ -63,34 +118,6 @@ static const char* __jsonConfig =
 ""
 ;
 
-/*
-* Parallel callback function used for notification. Not mandatory.
-* More info about parallel delivery: https://www.doubango.org/SDKs/anpr/docs/Parallel_versus_sequential_processing.html
-*/
-static size_t parallelNotifCount = 0;
-static std::condition_variable parallelNotifCondVar;
-class MyFldSdkParallelDeliveryCallback : public FldSdkParallelDeliveryCallback {
-public:
-	MyFldSdkParallelDeliveryCallback(const void* userData) : m_pMyDummyData(userData) {}
-	virtual void onNewResult(const FldSdkResult* result) const override {
-		// Use m_pMyDummyData here if you want
-		FLD_SDK_ASSERT(result != nullptr);
-		const std::string& json = result->json();
-		// Printing to the console could be very slow and delayed -> stop displaying the result as soon as all faces are processed
-		FLD_SDK_PRINT_INFO("MyFldSdkParallelDeliveryCallback::onNewResult(%d, %s, %zu): %s",
-			result->code(),
-			result->phrase(),
-			++parallelNotifCount,
-			!json.empty() ? json.c_str() : "{}"
-		);
-		parallelNotifCondVar.notify_one();
-	}
-private:
-	const void* m_pMyDummyData;
-};
-
-static void printUsage(const std::string& message = "");
-
 int main(int argc, char *argv[])
 {
 	// local variables
@@ -103,7 +130,7 @@ int main(int argc, char *argv[])
 
 	// Parsing args
 	std::map<std::string, std::string > args;
-	if (!fldParseArgs(argc, argv, args)) {
+	if (!parseArgs(argc, argv, args)) {
 		printUsage();
 		return -1;
 	}
@@ -152,12 +179,13 @@ int main(int argc, char *argv[])
 
 	jsonConfig += "}"; // end-of-config
 
-					   // Decode image
-	FldFile fldFile;
-	if (!fldDecodeFile(imagePath, fldFile)) {
-		FLD_SDK_PRINT_INFO("Failed to read image file: %s", imagePath.c_str());
+	// Decode the file
+	FldFile file;
+	if (!readFile(imagePath, file)) {
+		FLD_SDK_PRINT_ERROR("Can't process %s", imagePath.c_str());
 		return -1;
 	}
+	FLD_SDK_ASSERT(file.isValid());
 
 	// Init
 	FLD_SDK_PRINT_INFO("Starting liveness sample...");
@@ -169,14 +197,16 @@ int main(int argc, char *argv[])
 
 	// WarmUp: Force loading the models in memory (slow for first time) now and perform warmup calls.
 	// Warmup not required but processing will be fast if you call warm up first.
-	FLD_SDK_ASSERT((result = FldSdkEngine::warmUp(fldFile.type)).isOK());
+	FLD_SDK_ASSERT((result = FldSdkEngine::warmUp(file.type())).isOK());
 
 	// Processing
 	FLD_SDK_ASSERT((result = FldSdkEngine::process(
-		fldFile.type,
-		fldFile.uncompressedData,
-		fldFile.width,
-		fldFile.height
+		file.type(),
+		file.uncompressedDataPtr,
+		static_cast<size_t>(file.width),
+		static_cast<size_t>(file.height),
+		0, // stride
+		FldSdkEngine::exifOrientation(file.compressedDataPtr, file.compressedDataSize)
 	)).isOK());
 
 	// Printing to the console is very slow and use a low priority thread.
@@ -230,4 +260,65 @@ static void printUsage(const std::string& message /*= ""*/)
 		"--tokendata: Base64 license token if you have one. If not provided then, the application will act like a trial version. Default: null.\n\n"
 		"********************************************************************************\n"
 	);
+}
+
+static bool parseArgs(int argc, char *argv[], std::map<std::string, std::string >& values)
+{
+	FLD_SDK_ASSERT(argc > 0 && argv != nullptr);
+
+	values.clear();
+
+	// Make sure the number of arguments is even
+	if ((argc - 1) & 1) {
+		FLD_SDK_PRINT_ERROR("Number of args must be even");
+		return false;
+	}
+
+	// Parsing
+	for (int index = 1; index < argc; index += 2) {
+		std::string key = argv[index];
+		if (key.size() < 2 || key[0] != '-' || key[1] != '-') {
+			FLD_SDK_PRINT_ERROR("Invalid key: %s", key.c_str());
+			return false;
+		}
+		values[key] = argv[index + 1];
+	}
+
+	return true;
+}
+
+static bool readFile(const std::string& path, FldFile& file)
+{
+	// Open the file
+	if ((file.filePtr = fopen(path.c_str(), "rb")) == nullptr) {
+		FLD_SDK_PRINT_ERROR("Can't open %s", path.c_str());
+		return false;
+	}
+
+	// Retrieve file size
+	struct stat st_;
+	if (stat(path.c_str(), &st_) != 0) {
+		FLD_SDK_PRINT_ERROR("File is empty %s", path.c_str());
+	}
+	file.compressedDataSize = static_cast<size_t>(st_.st_size);
+
+	// Alloc memory and read data
+	file.compressedDataPtr = ::malloc(file.compressedDataSize);
+	if (!file.compressedDataPtr) {
+		FLD_SDK_PRINT_ERROR("Failed to alloc mem with size = %zu", file.compressedDataSize);
+		return false;
+	}
+	size_t read_;
+	if (file.compressedDataSize != (read_ = fread(file.compressedDataPtr, 1, file.compressedDataSize, file.filePtr))) {
+		FLD_SDK_PRINT_ERROR("fread(%s) returned %zu instead of %zu", path.c_str(), read_, file.compressedDataSize);
+		return false;
+	}
+
+	// Decode image
+	file.uncompressedDataPtr = stbi_load_from_memory(
+		reinterpret_cast<stbi_uc const *>(file.compressedDataPtr), static_cast<int>(file.compressedDataSize),
+		&file.width, &file.height, &file.channels, 0
+	);
+
+	return file.isValid();
 }
