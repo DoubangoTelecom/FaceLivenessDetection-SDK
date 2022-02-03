@@ -75,6 +75,10 @@ public class FldSdkEngine {
     return new FldSdkResult(FaceLivenessDetectionSDKJNI.FldSdkEngine_process__SWIG_5(imageType.swigValue(), yPtr, uPtr, vPtr, widthInSamples, heightInSamples, yStrideInBytes, uStrideInBytes, vStrideInBytes), true);
   }
 
+  public static int exifOrientation(java.nio.ByteBuffer jpegMetaDataPtr, long jpegMetaDataSize) {
+    return FaceLivenessDetectionSDKJNI.FldSdkEngine_exifOrientation(jpegMetaDataPtr, jpegMetaDataSize);
+  }
+
   public static FldSdkResult requestRuntimeLicenseKey(boolean rawInsteadOfJSON) {
     return new FldSdkResult(FaceLivenessDetectionSDKJNI.FldSdkEngine_requestRuntimeLicenseKey__SWIG_0(rawInsteadOfJSON), true);
   }
