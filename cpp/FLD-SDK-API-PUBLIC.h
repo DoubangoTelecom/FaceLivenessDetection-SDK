@@ -15,7 +15,7 @@ FaceLivenessDetection-SDK public header
 #include <assert.h>
 
 #define FLD_SDK_VERSION_MAJOR		0
-#define FLD_SDK_VERSION_MINOR		6
+#define FLD_SDK_VERSION_MINOR		7
 #define FLD_SDK_VERSION_MICRO		0
 
 // Windows's symbols export
