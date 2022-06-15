@@ -1,4 +1,4 @@
-/* Copyright (C) 2011-2021 Doubango Telecom <https://www.doubango.org>
+/* Copyright (C) 2011-2022 Doubango Telecom <https://www.doubango.org>
 * File author: Mamadou DIOP (Doubango Telecom, France).
 * License: For non commercial use only.
 * Source code: https://github.com/DoubangoTelecom/FaceLivenessDetection-SDK
@@ -14,8 +14,8 @@ FaceLivenessDetection-SDK public header
 #include <string>
 #include <assert.h>
 
-#define FLD_SDK_VERSION_MAJOR		0
-#define FLD_SDK_VERSION_MINOR		7
+#define FLD_SDK_VERSION_MAJOR		1
+#define FLD_SDK_VERSION_MINOR		0
 #define FLD_SDK_VERSION_MICRO		0
 
 // Windows's symbols export
