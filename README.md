@@ -18,9 +18,9 @@ To our knowledge we're **the only company in the world** that can perform 3D liv
 
 We can detect and block all known spoofing attacks: `Paper Print, Screen, Video Replay, 3D (silicone, paper, tissue...) realistic face mask, 2D paper mask, Concealment...`
 
-The next [video](https://youtu.be/4irfRCiOx1w) ([https://youtu.be/4irfRCiOx1w](https://youtu.be/4irfRCiOx1w)) shows a stress test on our implementation using different type of attacks:
+The next [video](https://doubango.org/videos/liveness/stress-doubango-x264.mp4) shows a stress test on our implementation using different type of attacks:
 
-[![Doubango AI: 3D Face liveness detector stress test](poster-medium.jpg)](https://www.youtube.com/watch?v=4Z8VRTS8WrA)
+[![Doubango AI: 3D Face liveness detector stress test](poster-medium.jpg)](https://doubango.org/videos/liveness/stress-doubango-x264.mp4)
 <hr />
 
 Our passive (frictionless) face liveness detector uses SOTA (State Of The Art) deep learning techniques and can be freely tested with your own images at https://www.doubango.org/webapps/face-liveness/
