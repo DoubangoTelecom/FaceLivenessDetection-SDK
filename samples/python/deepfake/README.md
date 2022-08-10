@@ -83,7 +83,7 @@ set PATH=%PATH%;%~dp0
 python ../../../samples/python/deepfake/deepfake.py --video ../../../assets/videos/deepfake.mp4 --assets ../../../assets
 endlocal
 ```
-If you want to make your life easier run [python_deepfake.bat](../../../binaries/windows/x86_64/python_liveness.bat) to test on Windows. You can edit the file using Notepad to change the parameters.
+If you want to make your life easier run [python_deepfake.bat](../../../binaries/windows/x86_64/python_deepfake.bat) to test on Windows. You can edit the file using Notepad to change the parameters.
 
 The result should look like this:
 [![Doubango AI: Deepfake detection](https://doubango.org/videos/liveness/deepfake-zelinsky.jpg)](https://doubango.org/videos/liveness/deepfake-zelinsky-x264.mp4)
