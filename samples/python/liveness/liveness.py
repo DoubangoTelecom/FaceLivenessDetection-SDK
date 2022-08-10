@@ -1,5 +1,5 @@
 '''
-    * Copyright (C) 2011-2021 Doubango Telecom <https://www.doubango.org>
+    * Copyright (C) 2011-2022 Doubango Telecom <https://www.doubango.org>
     * File author: Mamadou DIOP (Doubango Telecom, France).
     * License: For non commercial use only.
     * Source code: https://github.com/DoubangoTelecom/FaceLivenessDetection-SDK
@@ -9,7 +9,7 @@
     https://github.com/DoubangoTelecom/FaceLivenessDetection-SDK/blob/master/samples/python/liveness/README.md
 	Usage: 
 		recognizer.py \
-			--image <path-to-image-with-plate-to-recognize> \
+			--image <path-to-image-with-face-to-process> \
 			--assets <path-to-assets-folder>\
             [--tokenfile <path-to-license-token-file>] \
 			[--tokendata <base64-license-token-data>]
@@ -20,12 +20,7 @@
 import FaceLivenessDetectionSDK
 import argparse
 import json
-import platform
-import os.path
-from PIL import Image, ExifTags
-
-# EXIF orientation TAG
-ORIENTATION_TAG = [orient for orient in ExifTags.TAGS.keys() if ExifTags.TAGS[orient] == 'Orientation']
+import os
 
 # Defines the default JSON configuration. More information at https://www.doubango.org/SDKs/face-liveness/docs/Configuration_options.html
 JSON_CONFIG = {
@@ -49,12 +44,18 @@ JSON_CONFIG = {
     "detect_minscore": 0.9,
     "detect_face_minsize": 128,
     
+    "liveness_detect_enabled": True,
     "liveness_tf_num_threads": -1,
     "liveness_tf_gpu_memory_alloc_max_percent": 0.2,
     "liveness_face_minsize": 128,
     "liveness_genuine_minscore": 0.98,
     "liveness_disputed_minscore": 0.5,
     "liveness_toofar_threshold": 0.5,
+
+    "deepfake_detect_enabled": True,
+    "deepfake_tf_num_threads": -1,
+    "deepfake_tf_gpu_memory_alloc_max_percent": 0.2,
+    "deepfake_minscore": 0.5,
     
     "disguise_detect_enabled": True,
     "disguise_tf_num_threads": -1,
@@ -63,6 +64,40 @@ JSON_CONFIG = {
 }
 
 TAG = "[PythonLiveness] "
+
+IMAGE_TYPES_MAPPING = { 
+    'RGB': FaceLivenessDetectionSDK.FLD_SDK_IMAGE_TYPE_RGB24,
+    'RGBA': FaceLivenessDetectionSDK.FLD_SDK_IMAGE_TYPE_RGBA32,
+    'L': FaceLivenessDetectionSDK.FLD_SDK_IMAGE_TYPE_Y
+}
+
+# Load image
+def load_pil_image(path):
+    from PIL import Image, ExifTags, ImageOps
+    import traceback
+    pil_image = Image.open(path)
+    img_exif = pil_image.getexif()
+    ret = {}
+    orientation  = 1
+    try:
+        if img_exif:
+            for tag, value in img_exif.items():
+                decoded = ExifTags.TAGS.get(tag, tag)
+                ret[decoded] = value
+            orientation  = ret["Orientation"]
+    except Exception as e:
+        print(TAG + "An exception occurred: {}".format(e))
+        traceback.print_exc()
+
+    if orientation > 1:
+        pil_image = ImageOps.exif_transpose(pil_image)
+
+    if pil_image.mode in IMAGE_TYPES_MAPPING:
+        imageType = IMAGE_TYPES_MAPPING[pil_image.mode]
+    else:
+        raise ValueError(TAG + "Invalid mode: %s" % pil_image.mode)
+
+    return pil_image, imageType
 
 # Check result
 def checkResult(operation, result):
@@ -78,7 +113,7 @@ if __name__ == "__main__":
     This is the recognizer sample using python language
     """)
 
-    parser.add_argument("--image", required=True, help="Path to the image with ALPR data to recognize")
+    parser.add_argument("--image", required=True, help="Path to the image with Face data to process")
     parser.add_argument("--assets", required=False, default="../../../assets", help="Path to the assets folder")
     parser.add_argument("--tokenfile", required=False, default="", help="Path to license token file")
     parser.add_argument("--tokendata", required=False, default="", help="Base64 license token data")
@@ -90,22 +125,9 @@ if __name__ == "__main__":
         print(TAG + "File doesn't exist: %s" % args.image)
         assert False
 
-    # Decode the image
-    image = Image.open(args.image)
+    # Decode the image and extract type
+    image, imageType = load_pil_image(args.image)
     width, height = image.size
-    if image.mode == "RGB":
-        format = FaceLivenessDetectionSDK.FLD_SDK_IMAGE_TYPE_RGB24
-    elif image.mode == "RGBA":
-        format = FaceLivenessDetectionSDK.FLD_SDK_IMAGE_TYPE_RGBA32
-    elif image.mode == "L":
-        format = FaceLivenessDetectionSDK.FLD_SDK_IMAGE_TYPE_Y
-    else:
-        print(TAG + "Invalid mode: %s" % image.mode)
-        assert False
-
-    # Read the EXIF orientation value
-    exif = image._getexif()
-    exifOrientation = exif[ORIENTATION_TAG[0]] if len(ORIENTATION_TAG) == 1 and exif != None else 1
 
     # Update JSON options using values from the command args
     JSON_CONFIG["assets_folder"] = args.assets
@@ -117,12 +139,6 @@ if __name__ == "__main__":
                 FaceLivenessDetectionSDK.FldSdkEngine_init(json.dumps(JSON_CONFIG))
                )
 
-    # WarmUp: Force loading the models in memory (slow for first time) now and perform warmup calls.
-    # Warmup not required but processing will be fast if you call warm up first.
-    checkResult("warmUp", 
-                FaceLivenessDetectionSDK.FldSdkEngine_warmUp(format)
-               )
-
     # Process
     # Please note that the first time you call this function all deep learning models will be loaded 
     # and initialized which means it will be slow. In your application you've to initialize the engine
@@ -130,12 +146,12 @@ if __name__ == "__main__":
     # Call warmUp to avoid a slow processing for the first call.
     checkResult("Process",
                 FaceLivenessDetectionSDK.FldSdkEngine_process(
-                    format,
+                    imageType,
                     image.tobytes(), # type(x) == bytes
                     width,
                     height,
                     0, # stride
-                    exifOrientation
+                    1 # exifOrientation (already rotated in load_pil_image -> use default value: 1)
                     )
         )
 
