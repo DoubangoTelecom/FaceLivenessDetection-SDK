@@ -15,7 +15,7 @@ FaceLivenessDetection-SDK public header
 #include <assert.h>
 
 #define FLD_SDK_VERSION_MAJOR		1
-#define FLD_SDK_VERSION_MINOR		1
+#define FLD_SDK_VERSION_MINOR		3
 #define FLD_SDK_VERSION_MICRO		0
 
 // Windows's symbols export
@@ -281,7 +281,7 @@ namespace FaceLiveness
 		}
 		\endcode
 		\param imageType The image type.
-		\param imageData Pointer to the image data.
+		\param imageDataPtr Pointer to the image data.
 		\param imageWidthInSamples Image width in samples.
 		\param imageHeightInSamples Image height in samples.
 		\param imageStrideInSamples Image stride in samples. Should be zero unless your the data is strided.
@@ -290,7 +290,7 @@ namespace FaceLiveness
 		*/
 		static FldSdkResult process(
 			const FLD_SDK_IMAGE_TYPE imageType,
-			const void* imageData,
+			const void* imageDataPtr,
 			const size_t imageWidthInSamples,
 			const size_t imageHeightInSamples,
 			const size_t imageStrideInSamples = 0,
@@ -338,6 +338,19 @@ namespace FaceLiveness
 			const size_t vStrideInBytes,
 			const size_t uvPixelStrideInBytes = 0,
 			const int exifOrientation = 1
+		);
+
+
+		/*! Performs face liveness detection operations.
+			\param encodedDataPtr Pointer to the encoded data. Could be JPEG, PNG, BMP or any encoded data.
+			\param encodedDataSize The size of the encoded data in bytes.
+			\returns a \ref FldSdkResult "result"
+
+			Available since: 1.3.0
+		*/
+		static FldSdkResult process(
+			const void* encodedDataPtr,
+			const size_t encodedDataSize
 		);
 
 		/*! Retrieve EXIF orientation value from JPEG meta-data.

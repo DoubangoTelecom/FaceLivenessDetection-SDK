@@ -61,18 +61,18 @@ public class FldSdkEngine : IDisposable {
     return ret;
   }
 
-  public static FldSdkResult process(FLD_SDK_IMAGE_TYPE imageType, IntPtr imageData, uint imageWidthInSamples, uint imageHeightInSamples, uint imageStrideInSamples, int imageExifOrientation) {
-    FldSdkResult ret = new FldSdkResult(FaceLivenessDetectionSDKPINVOKE.FldSdkEngine_process__SWIG_0((int)imageType, imageData, imageWidthInSamples, imageHeightInSamples, imageStrideInSamples, imageExifOrientation), true);
+  public static FldSdkResult process(FLD_SDK_IMAGE_TYPE imageType, IntPtr imageDataPtr, uint imageWidthInSamples, uint imageHeightInSamples, uint imageStrideInSamples, int imageExifOrientation) {
+    FldSdkResult ret = new FldSdkResult(FaceLivenessDetectionSDKPINVOKE.FldSdkEngine_process__SWIG_0((int)imageType, imageDataPtr, imageWidthInSamples, imageHeightInSamples, imageStrideInSamples, imageExifOrientation), true);
     return ret;
   }
 
-  public static FldSdkResult process(FLD_SDK_IMAGE_TYPE imageType, IntPtr imageData, uint imageWidthInSamples, uint imageHeightInSamples, uint imageStrideInSamples) {
-    FldSdkResult ret = new FldSdkResult(FaceLivenessDetectionSDKPINVOKE.FldSdkEngine_process__SWIG_1((int)imageType, imageData, imageWidthInSamples, imageHeightInSamples, imageStrideInSamples), true);
+  public static FldSdkResult process(FLD_SDK_IMAGE_TYPE imageType, IntPtr imageDataPtr, uint imageWidthInSamples, uint imageHeightInSamples, uint imageStrideInSamples) {
+    FldSdkResult ret = new FldSdkResult(FaceLivenessDetectionSDKPINVOKE.FldSdkEngine_process__SWIG_1((int)imageType, imageDataPtr, imageWidthInSamples, imageHeightInSamples, imageStrideInSamples), true);
     return ret;
   }
 
-  public static FldSdkResult process(FLD_SDK_IMAGE_TYPE imageType, IntPtr imageData, uint imageWidthInSamples, uint imageHeightInSamples) {
-    FldSdkResult ret = new FldSdkResult(FaceLivenessDetectionSDKPINVOKE.FldSdkEngine_process__SWIG_2((int)imageType, imageData, imageWidthInSamples, imageHeightInSamples), true);
+  public static FldSdkResult process(FLD_SDK_IMAGE_TYPE imageType, IntPtr imageDataPtr, uint imageWidthInSamples, uint imageHeightInSamples) {
+    FldSdkResult ret = new FldSdkResult(FaceLivenessDetectionSDKPINVOKE.FldSdkEngine_process__SWIG_2((int)imageType, imageDataPtr, imageWidthInSamples, imageHeightInSamples), true);
     return ret;
   }
 
@@ -88,6 +88,11 @@ public class FldSdkEngine : IDisposable {
 
   public static FldSdkResult process(FLD_SDK_IMAGE_TYPE imageType, IntPtr yPtr, IntPtr uPtr, IntPtr vPtr, uint widthInSamples, uint heightInSamples, uint yStrideInBytes, uint uStrideInBytes, uint vStrideInBytes) {
     FldSdkResult ret = new FldSdkResult(FaceLivenessDetectionSDKPINVOKE.FldSdkEngine_process__SWIG_5((int)imageType, yPtr, uPtr, vPtr, widthInSamples, heightInSamples, yStrideInBytes, uStrideInBytes, vStrideInBytes), true);
+    return ret;
+  }
+
+  public static FldSdkResult process(IntPtr encodedDataPtr, uint encodedDataSize) {
+    FldSdkResult ret = new FldSdkResult(FaceLivenessDetectionSDKPINVOKE.FldSdkEngine_process__SWIG_6(encodedDataPtr, encodedDataSize), true);
     return ret;
   }
 

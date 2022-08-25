@@ -18,9 +18,7 @@
 '''
 
 import FaceLivenessDetectionSDK
-import argparse
-import json
-import os
+import os, argparse, json
 
 # Defines the default JSON configuration. More information at https://www.doubango.org/SDKs/face-liveness/docs/Configuration_options.html
 JSON_CONFIG = {
@@ -41,13 +39,13 @@ JSON_CONFIG = {
     "detect_tf_num_threads": -1,
     "detect_tf_gpu_memory_alloc_max_percent": 0.2,
     "detect_roi": [0, 0, 0, 0],
-    "detect_minscore": 0.9,
-    "detect_face_minsize": 128,
+    "detect_minscore": 0.93,
+    "detect_face_minsize": 65,
     
     "liveness_detect_enabled": True,
     "liveness_tf_num_threads": -1,
     "liveness_tf_gpu_memory_alloc_max_percent": 0.2,
-    "liveness_face_minsize": 128,
+    "liveness_face_minsize": 64,
     "liveness_genuine_minscore": 0.98,
     "liveness_disputed_minscore": 0.5,
     "liveness_toofar_threshold": 0.5,
@@ -64,40 +62,6 @@ JSON_CONFIG = {
 }
 
 TAG = "[PythonLiveness] "
-
-IMAGE_TYPES_MAPPING = { 
-    'RGB': FaceLivenessDetectionSDK.FLD_SDK_IMAGE_TYPE_RGB24,
-    'RGBA': FaceLivenessDetectionSDK.FLD_SDK_IMAGE_TYPE_RGBA32,
-    'L': FaceLivenessDetectionSDK.FLD_SDK_IMAGE_TYPE_Y
-}
-
-# Load image
-def load_pil_image(path):
-    from PIL import Image, ExifTags, ImageOps
-    import traceback
-    pil_image = Image.open(path)
-    img_exif = pil_image.getexif()
-    ret = {}
-    orientation  = 1
-    try:
-        if img_exif:
-            for tag, value in img_exif.items():
-                decoded = ExifTags.TAGS.get(tag, tag)
-                ret[decoded] = value
-            orientation  = ret["Orientation"]
-    except Exception as e:
-        print(TAG + "An exception occurred: {}".format(e))
-        traceback.print_exc()
-
-    if orientation > 1:
-        pil_image = ImageOps.exif_transpose(pil_image)
-
-    if pil_image.mode in IMAGE_TYPES_MAPPING:
-        imageType = IMAGE_TYPES_MAPPING[pil_image.mode]
-    else:
-        raise ValueError(TAG + "Invalid mode: %s" % pil_image.mode)
-
-    return pil_image, imageType
 
 # Check result
 def checkResult(operation, result):
@@ -125,10 +89,6 @@ if __name__ == "__main__":
         print(TAG + "File doesn't exist: %s" % args.image)
         assert False
 
-    # Decode the image and extract type
-    image, imageType = load_pil_image(args.image)
-    width, height = image.size
-
     # Update JSON options using values from the command args
     JSON_CONFIG["assets_folder"] = args.assets
     JSON_CONFIG["license_token_file"] = args.tokenfile
@@ -144,16 +104,13 @@ if __name__ == "__main__":
     # and initialized which means it will be slow. In your application you've to initialize the engine
     # once and do all the recognitions you need, then deinitialize it.
     # Call warmUp to avoid a slow processing for the first call.
-    checkResult("Process",
-                FaceLivenessDetectionSDK.FldSdkEngine_process(
-                    imageType,
-                    image.tobytes(), # type(x) == bytes
-                    width,
-                    height,
-                    0, # stride
-                    1 # exifOrientation (already rotated in load_pil_image -> use default value: 1)
-                    )
-        )
+    with open(args.image, 'rb') as file:
+        checkResult("Process",
+                    FaceLivenessDetectionSDK.FldSdkEngine_process(
+                        file.read(),
+                        os.fstat(file.fileno()).st_size
+                        )
+            )
 
     # Press any key to exit
     input("\nPress Enter to exit...\n") 

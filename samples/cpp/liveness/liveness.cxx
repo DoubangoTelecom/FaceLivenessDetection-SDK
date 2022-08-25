@@ -18,11 +18,6 @@
 #include <algorithm> // std::replace
 #endif
 
-// Not part of the SDK, used to decode images -> https://github.com/nothings/stb
-#define STB_IMAGE_IMPLEMENTATION
-#define STB_IMAGE_STATIC
-#include "../stb_image.h"
-
 using namespace FaceLiveness;
 
 // Asset manager used on Android to files in "assets" folder
@@ -33,21 +28,15 @@ using namespace FaceLiveness;
 #endif /* FLD_SDK_OS_ANDROID */
 
 struct FldFile {
-	int width = 0, height = 0, channels = 0;
-	stbi_uc* uncompressedDataPtr = nullptr;
 	void* compressedDataPtr = nullptr;
 	size_t compressedDataSize = 0;
 	FILE* filePtr = nullptr;
 	virtual ~FldFile() {
-		if (uncompressedDataPtr) free(uncompressedDataPtr), uncompressedDataPtr = nullptr;
 		if (compressedDataPtr) free(compressedDataPtr), compressedDataPtr = nullptr;
 		if (filePtr) fclose(filePtr), filePtr = nullptr;
 	}
 	bool isValid() const {
-		return width > 0 && height > 0 && (channels == 1 || channels == 3 || channels == 4) && uncompressedDataPtr && compressedDataPtr && compressedDataSize > 0;
-	}
-	FLD_SDK_IMAGE_TYPE type() const {
-		return channels == 4 ? FLD_SDK_IMAGE_TYPE_RGBA32 : (channels == 1 ? FLD_SDK_IMAGE_TYPE_Y : FLD_SDK_IMAGE_TYPE_RGB24);
+		return compressedDataPtr && compressedDataSize > 0;
 	}
 };
 
@@ -101,13 +90,13 @@ static const char* __jsonConfig =
 "\"detect_tf_num_threads\": -1,"
 "\"detect_tf_gpu_memory_alloc_max_percent\": 0.2,"
 "\"detect_roi\": [0, 0, 0, 0],"
-"\"detect_minscore\": 0.9,"
-"\"detect_face_minsize\": 128,"
+"\"detect_minscore\": 0.93,"
+"\"detect_face_minsize\": 65,"
 ""
 "\"liveness_detect_enabled\": true,"
 "\"liveness_tf_num_threads\": -1,"
 "\"liveness_tf_gpu_memory_alloc_max_percent\": 0.2,"
-"\"liveness_face_minsize\": 128,"
+"\"liveness_face_minsize\": 64,"
 "\"liveness_genuine_minscore\": 0.98,"
 "\"liveness_disputed_minscore\": 0.5,"
 "\"liveness_toofar_threshold\": 0.5,"
@@ -203,16 +192,12 @@ int main(int argc, char *argv[])
 
 	// WarmUp: Force loading the models in memory (slow for first time) now and perform warmup calls.
 	// Warmup not required but processing will be fast if you call warm up first.
-	FLD_SDK_ASSERT((result = FldSdkEngine::warmUp(file.type())).isOK());
+	FLD_SDK_ASSERT((result = FldSdkEngine::warmUp(FLD_SDK_IMAGE_TYPE::FLD_SDK_IMAGE_TYPE_RGB24)).isOK());
 
 	// Processing
 	FLD_SDK_ASSERT((result = FldSdkEngine::process(
-		file.type(),
-		file.uncompressedDataPtr,
-		static_cast<size_t>(file.width),
-		static_cast<size_t>(file.height),
-		0, // stride
-		FldSdkEngine::exifOrientation(file.compressedDataPtr, file.compressedDataSize)
+		file.compressedDataPtr,
+		file.compressedDataSize
 	)).isOK());
 
 	// Printing to the console is very slow and use a low priority thread.
@@ -319,12 +304,6 @@ static bool readFile(const std::string& path, FldFile& file)
 		FLD_SDK_PRINT_ERROR("fread(%s) returned %zu instead of %zu", path.c_str(), read_, file.compressedDataSize);
 		return false;
 	}
-
-	// Decode image
-	file.uncompressedDataPtr = stbi_load_from_memory(
-		reinterpret_cast<stbi_uc const *>(file.compressedDataPtr), static_cast<int>(file.compressedDataSize),
-		&file.width, &file.height, &file.channels, 0
-	);
 
 	return file.isValid();
 }

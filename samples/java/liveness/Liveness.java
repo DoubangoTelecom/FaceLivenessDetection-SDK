@@ -1,4 +1,4 @@
-/* Copyright (C) 2011-2021 Doubango Telecom <https://www.doubango.org>
+/* Copyright (C) 2011-2022 Doubango Telecom <https://www.doubango.org>
 * File author: Mamadou DIOP (Doubango Telecom, France).
 * License: For non commercial use only.
 * Source code: https://github.com/DoubangoTelecom/FaceLivenessDetection-SDK
@@ -7,8 +7,8 @@
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.Hashtable;
 import java.util.IllegalFormatException;
 import java.util.List;
@@ -18,12 +18,6 @@ import java.lang.IllegalArgumentException;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.MappedByteBuffer;
-
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBuffer;
-import java.awt.image.DataBufferByte;
-import javax.imageio.ImageIO;
 
 import org.doubango.FaceLivenessDetection.Sdk.FLD_SDK_IMAGE_TYPE;
 import org.doubango.FaceLivenessDetection.Sdk.FldSdkEngine;
@@ -63,41 +57,29 @@ public class Liveness {
       {
           throw new FileNotFoundException("File not found: " + file.getAbsolutePath());
       }
-      final BufferedImage image = ImageIO.read(file);
-      final int bytesPerPixel = image.getColorModel().getPixelSize() >> 3;
-      if (bytesPerPixel != 1 && bytesPerPixel != 3 && bytesPerPixel != 4)
-      {
-         throw new IOException("Invalid BPP: " + bytesPerPixel);
-      }
-      System.out.println("bytesPerPixel: " + bytesPerPixel + System.lineSeparator());
-
-      // Write data to native/direct ByteBuffer
-      final DataBuffer dataBuffer = image.getRaster().getDataBuffer();
-      if (!(dataBuffer instanceof DataBufferByte)) {
-         throw new IOException("Image must contains 1-byte samples");
-      }
-      final ByteBuffer nativeBuffer = ByteBuffer.allocateDirect(image.getWidth() * image.getHeight() * bytesPerPixel);
-      final byte[] pixelData = ((DataBufferByte) dataBuffer).getData();
-      nativeBuffer.put(pixelData);
-      nativeBuffer.rewind();
-
-      // Get the image format
-      final FLD_SDK_IMAGE_TYPE format = (bytesPerPixel == 1) ? FLD_SDK_IMAGE_TYPE.FLD_SDK_IMAGE_TYPE_Y : (bytesPerPixel == 4 ? FLD_SDK_IMAGE_TYPE.FLD_SDK_IMAGE_TYPE_BGRA32 : FLD_SDK_IMAGE_TYPE.FLD_SDK_IMAGE_TYPE_BGR24);
 
       // WarmUp: Force loading the models in memory (slow for first time) now and perform warmup calls.
       // Warmup not required but processing will be fast if you call warm up first.
-      result = CheckResult("warmUp", FldSdkEngine.warmUp(format));
+      result = CheckResult("warmUp", FldSdkEngine.warmUp(FLD_SDK_IMAGE_TYPE.FLD_SDK_IMAGE_TYPE_RGB24));
+
+      // Reading The data
+      ByteBuffer nativeBuffer = null;
+      try(RandomAccessFile inFile = new RandomAccessFile(file, "r")) {
+         final FileChannel inChannel = inFile.getChannel();
+         nativeBuffer = ByteBuffer.allocateDirect((int)inChannel.size());
+         inChannel.read(nativeBuffer);
+         nativeBuffer.flip();         
+      } catch (IOException e) {
+         e.printStackTrace();
+         throw e;
+      }
       
       // Processing
       // First inference is expected to be slow (deep learning models mapping to CPU/GPU memory)
       // Call warmUp function to avoid slow processing on first call
       result = CheckResult("Process", FldSdkEngine.process(
-            format,
             nativeBuffer,
-            image.getWidth(),
-            image.getHeight(),
-            image.getWidth(), // stride
-            getExifOrientation(file)
+            nativeBuffer.remaining()
          ));
       // Print result to console
       System.out.println("Result: " + result.json() + System.lineSeparator());
@@ -113,34 +95,6 @@ public class Liveness {
        // Now that you're done, deInit the engine before exiting
        CheckResult("DeInit", FldSdkEngine.deInit());
    }
-
-   static int getExifOrientation(File file) throws IOException 
-   {
-      final FileInputStream fin= new FileInputStream(file);
-      final FileChannel channel = fin.getChannel();
-
-      // Check if it's JPEG
-      final MappedByteBuffer codeBuffer = channel.map(FileChannel.MapMode.READ_ONLY, 0, 2); // read 2 first bytes
-      if (codeBuffer.asShortBuffer().get() != -40) { // -40 = 0xFFD8 in Short
-         return 1;
-      }
-      
-      // Read raw data and extract EXIF info
-      final long fileSize = channel.size();
-      final ByteBuffer buffer = ByteBuffer.allocateDirect((int) fileSize);
-      channel.read(buffer);
-      buffer.flip();
-
-      channel.close();
-      fin.close();
-
-      final int orientation = FldSdkEngine.exifOrientation(buffer, buffer.remaining());
-      if (orientation < 1 || orientation > 8) {
-         System.err.println(String.format("Invalid EXIF orientation value: %d", orientation));
-         return 1;
-      }
-      return orientation;
-    }
 
    static Hashtable<String, String> ParseArgs(String[] args) throws IllegalArgumentException
    {
@@ -203,16 +157,16 @@ public class Liveness {
          "\"detect_tf_gpu_memory_alloc_max_percent\": 0.2," +
          "\"detect_roi\": [0, 0, 0, 0]," +
          "\"detect_minscore\": 0.9," +
-         "\"detect_face_minsize\": 128," +
+         "\"detect_face_minsize\": 65," +
          "" +
-		 "\"liveness_detect_enabled\": true," +
+         "\"liveness_detect_enabled\": true," +
          "\"liveness_tf_num_threads\": -1," +
          "\"liveness_tf_gpu_memory_alloc_max_percent\": 0.2," +
-         "\"liveness_face_minsize\": 128," +
+         "\"liveness_face_minsize\": 64," +
          "\"liveness_genuine_minscore\": 0.98," +
          "\"liveness_disputed_minscore\": 0.5," +
          "\"liveness_toofar_threshold\": 0.5," +
-		 "" +
+         "" +
          "\"deepfake_detect_enabled\": true," +
          "\"deepfake_tf_num_threads\": -1," +
          "\"deepfake_tf_gpu_memory_alloc_max_percent\": 0.2," +

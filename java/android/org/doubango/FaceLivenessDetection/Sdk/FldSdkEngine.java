@@ -51,16 +51,16 @@ public class FldSdkEngine {
     return new FldSdkResult(FaceLivenessDetectionSDKJNI.FldSdkEngine_deInit(), true);
   }
 
-  public static FldSdkResult process(FLD_SDK_IMAGE_TYPE imageType, java.nio.ByteBuffer imageData, long imageWidthInSamples, long imageHeightInSamples, long imageStrideInSamples, int imageExifOrientation) {
-    return new FldSdkResult(FaceLivenessDetectionSDKJNI.FldSdkEngine_process__SWIG_0(imageType.swigValue(), imageData, imageWidthInSamples, imageHeightInSamples, imageStrideInSamples, imageExifOrientation), true);
+  public static FldSdkResult process(FLD_SDK_IMAGE_TYPE imageType, java.nio.ByteBuffer imageDataPtr, long imageWidthInSamples, long imageHeightInSamples, long imageStrideInSamples, int imageExifOrientation) {
+    return new FldSdkResult(FaceLivenessDetectionSDKJNI.FldSdkEngine_process__SWIG_0(imageType.swigValue(), imageDataPtr, imageWidthInSamples, imageHeightInSamples, imageStrideInSamples, imageExifOrientation), true);
   }
 
-  public static FldSdkResult process(FLD_SDK_IMAGE_TYPE imageType, java.nio.ByteBuffer imageData, long imageWidthInSamples, long imageHeightInSamples, long imageStrideInSamples) {
-    return new FldSdkResult(FaceLivenessDetectionSDKJNI.FldSdkEngine_process__SWIG_1(imageType.swigValue(), imageData, imageWidthInSamples, imageHeightInSamples, imageStrideInSamples), true);
+  public static FldSdkResult process(FLD_SDK_IMAGE_TYPE imageType, java.nio.ByteBuffer imageDataPtr, long imageWidthInSamples, long imageHeightInSamples, long imageStrideInSamples) {
+    return new FldSdkResult(FaceLivenessDetectionSDKJNI.FldSdkEngine_process__SWIG_1(imageType.swigValue(), imageDataPtr, imageWidthInSamples, imageHeightInSamples, imageStrideInSamples), true);
   }
 
-  public static FldSdkResult process(FLD_SDK_IMAGE_TYPE imageType, java.nio.ByteBuffer imageData, long imageWidthInSamples, long imageHeightInSamples) {
-    return new FldSdkResult(FaceLivenessDetectionSDKJNI.FldSdkEngine_process__SWIG_2(imageType.swigValue(), imageData, imageWidthInSamples, imageHeightInSamples), true);
+  public static FldSdkResult process(FLD_SDK_IMAGE_TYPE imageType, java.nio.ByteBuffer imageDataPtr, long imageWidthInSamples, long imageHeightInSamples) {
+    return new FldSdkResult(FaceLivenessDetectionSDKJNI.FldSdkEngine_process__SWIG_2(imageType.swigValue(), imageDataPtr, imageWidthInSamples, imageHeightInSamples), true);
   }
 
   public static FldSdkResult process(FLD_SDK_IMAGE_TYPE imageType, java.nio.ByteBuffer yPtr, java.nio.ByteBuffer uPtr, java.nio.ByteBuffer vPtr, long widthInSamples, long heightInSamples, long yStrideInBytes, long uStrideInBytes, long vStrideInBytes, long uvPixelStrideInBytes, int exifOrientation) {
@@ -73,6 +73,10 @@ public class FldSdkEngine {
 
   public static FldSdkResult process(FLD_SDK_IMAGE_TYPE imageType, java.nio.ByteBuffer yPtr, java.nio.ByteBuffer uPtr, java.nio.ByteBuffer vPtr, long widthInSamples, long heightInSamples, long yStrideInBytes, long uStrideInBytes, long vStrideInBytes) {
     return new FldSdkResult(FaceLivenessDetectionSDKJNI.FldSdkEngine_process__SWIG_5(imageType.swigValue(), yPtr, uPtr, vPtr, widthInSamples, heightInSamples, yStrideInBytes, uStrideInBytes, vStrideInBytes), true);
+  }
+
+  public static FldSdkResult process(java.nio.ByteBuffer encodedDataPtr, long encodedDataSize) {
+    return new FldSdkResult(FaceLivenessDetectionSDKJNI.FldSdkEngine_process__SWIG_6(encodedDataPtr, encodedDataSize), true);
   }
 
   public static int exifOrientation(java.nio.ByteBuffer jpegMetaDataPtr, long jpegMetaDataSize) {

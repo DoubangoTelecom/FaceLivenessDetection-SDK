@@ -9,7 +9,7 @@
 package org.doubango.FaceLivenessDetection.Sdk;
 
 public interface FaceLivenessDetectionSDKConstants {
-  public final static int FLD_SDK_VERSION_MAJOR = 0;
-  public final static int FLD_SDK_VERSION_MINOR = 6;
+  public final static int FLD_SDK_VERSION_MAJOR = 1;
+  public final static int FLD_SDK_VERSION_MINOR = 3;
   public final static int FLD_SDK_VERSION_MICRO = 0;
 }

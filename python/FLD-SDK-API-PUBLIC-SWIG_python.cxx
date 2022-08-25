@@ -5046,6 +5046,44 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_FldSdkEngine_process__SWIG_6(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  void *arg1 = (void *) 0 ;
+  size_t arg2 ;
+  size_t val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  FaceLiveness::FldSdkResult result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:FldSdkEngine_process",&obj0,&obj1)) SWIG_fail;
+  {
+    // https://docs.python.org/3/c-api/bytes.html#c.PyBytes_AsString
+    // char* PyBytes_AsString(PyObject *o)
+    // Return a pointer to the contents of o. The pointer refers to the internal buffer of o, which consists of len(o) + 1 bytes. 
+    // The last byte in the buffer is always null, regardless of whether there are any other null bytes. 
+    // The data must not be modified in any way, unless the object was just created using PyBytes_FromStringAndSize(NULL, size). 
+    // It must not be deallocated. If o is not a bytes object at all, PyBytes_AsString() returns NULL and raises TypeError.
+    if (PyBytes_Check(obj0)) {
+      arg1 = (void *) PyBytes_AsString(obj0);
+    }
+    else if (PyString_Check(obj0)) {
+      arg1 = (void *) PyString_AsString(obj0);
+    }
+  }
+  ecode2 = SWIG_AsVal_size_t(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "FldSdkEngine_process" "', argument " "2"" of type '" "size_t""'");
+  } 
+  arg2 = static_cast< size_t >(val2);
+  result = FaceLiveness::FldSdkEngine::process((void const *)arg1,arg2);
+  resultobj = SWIG_NewPointerObj((new FaceLiveness::FldSdkResult(static_cast< const FaceLiveness::FldSdkResult& >(result))), SWIGTYPE_p_FaceLiveness__FldSdkResult, SWIG_POINTER_OWN |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_FldSdkEngine_process(PyObject *self, PyObject *args) {
   int argc;
   PyObject *argv[12];
@@ -5055,6 +5093,19 @@ SWIGINTERN PyObject *_wrap_FldSdkEngine_process(PyObject *self, PyObject *args) 
   argc = args ? (int)PyObject_Length(args) : 0;
   for (ii = 0; (ii < 11) && (ii < argc); ii++) {
     argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 2) {
+    int _v;
+    _v = (argv[0] != 0);
+    if (_v) {
+      {
+        int res = SWIG_AsVal_size_t(argv[1], NULL);
+        _v = SWIG_CheckState(res);
+      }
+      if (_v) {
+        return _wrap_FldSdkEngine_process__SWIG_6(self, args);
+      }
+    }
   }
   if (argc == 4) {
     int _v;
@@ -5323,7 +5374,8 @@ fail:
     "    FaceLiveness::FldSdkEngine::process(FaceLiveness::FLD_SDK_IMAGE_TYPE const,void const *,size_t const,size_t const)\n"
     "    FaceLiveness::FldSdkEngine::process(FaceLiveness::FLD_SDK_IMAGE_TYPE const,void const *,void const *,void const *,size_t const,size_t const,size_t const,size_t const,size_t const,size_t const,int const)\n"
     "    FaceLiveness::FldSdkEngine::process(FaceLiveness::FLD_SDK_IMAGE_TYPE const,void const *,void const *,void const *,size_t const,size_t const,size_t const,size_t const,size_t const,size_t const)\n"
-    "    FaceLiveness::FldSdkEngine::process(FaceLiveness::FLD_SDK_IMAGE_TYPE const,void const *,void const *,void const *,size_t const,size_t const,size_t const,size_t const,size_t const)\n");
+    "    FaceLiveness::FldSdkEngine::process(FaceLiveness::FLD_SDK_IMAGE_TYPE const,void const *,void const *,void const *,size_t const,size_t const,size_t const,size_t const,size_t const)\n"
+    "    FaceLiveness::FldSdkEngine::process(void const *,size_t const)\n");
   return 0;
 }
 
@@ -6251,8 +6303,8 @@ SWIG_init(void) {
   
   SWIG_InstallConstants(d,swig_const_table);
   
-  SWIG_Python_SetConstant(d, "FLD_SDK_VERSION_MAJOR",SWIG_From_int(static_cast< int >(0)));
-  SWIG_Python_SetConstant(d, "FLD_SDK_VERSION_MINOR",SWIG_From_int(static_cast< int >(6)));
+  SWIG_Python_SetConstant(d, "FLD_SDK_VERSION_MAJOR",SWIG_From_int(static_cast< int >(1)));
+  SWIG_Python_SetConstant(d, "FLD_SDK_VERSION_MINOR",SWIG_From_int(static_cast< int >(3)));
   SWIG_Python_SetConstant(d, "FLD_SDK_VERSION_MICRO",SWIG_From_int(static_cast< int >(0)));
   SWIG_Python_SetConstant(d, "FLD_SDK_IMAGE_TYPE_RGB24",SWIG_From_int(static_cast< int >(FaceLiveness::FLD_SDK_IMAGE_TYPE_RGB24)));
   SWIG_Python_SetConstant(d, "FLD_SDK_IMAGE_TYPE_RGBA32",SWIG_From_int(static_cast< int >(FaceLiveness::FLD_SDK_IMAGE_TYPE_RGBA32)));
